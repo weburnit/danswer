@@ -73,7 +73,7 @@ def get_internal_links(
 
 def start_playwright() -> Tuple[Playwright, BrowserContext]:
     playwright = sync_playwright().start()
-    browser = playwright.chromium.launch(headless=True, executable_path=PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH)
+    browser = playwright.chromium.launch(headless=False, executable_path=PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH)
 
     context = browser.new_context()
 
