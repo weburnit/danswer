@@ -22,7 +22,7 @@ from danswer.configs.app_configs import PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
 from danswer.configs.constants import DocumentSource
 from danswer.connectors.cross_connector_utils.file_utils import read_pdf_file
 from danswer.connectors.cross_connector_utils.html_utils import web_html_cleanup
-from danswer.connectors.interfaces import GenerateDocumentsOutput
+from danswer.connectors.interfaces import GenerateDocumentsOutput, DataSyncConnector
 from danswer.connectors.interfaces import LoadConnector
 from danswer.connectors.models import Document
 from danswer.connectors.models import Section
@@ -120,7 +120,7 @@ def _read_urls_file(location: str) -> list[str]:
     return urls
 
 
-class WebConnector(LoadConnector):
+class WebConnector(LoadConnector, DataSyncConnector):
     def __init__(
         self,
         base_url: str,  # Can't change this without disrupting existing users
@@ -253,6 +253,18 @@ class WebConnector(LoadConnector):
         if doc_batch:
             playwright.stop()
             yield doc_batch
+
+    def sync_data(self, data_source: Any):
+        method = data_source.get('method').upper()
+        headers = data_source.get('headers', {})
+        body = data_source.get('body', {})
+        query_params = data_source.get('query_params', {})
+        endpoint = data_source.get('endpoint')
+        try:
+            response = requests.request(method=method, url=endpoint, headers=headers, params=query_params, json=body)
+            response.raise_for_status()  # Raises an HTTPError for bad responses
+        except requests.RequestException as e:
+            raise e
 
 
 if __name__ == "__main__":
