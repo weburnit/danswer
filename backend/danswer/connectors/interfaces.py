@@ -55,3 +55,9 @@ class EventConnector(BaseConnector):
     @abc.abstractmethod
     def handle_event(self, event: Any) -> GenerateDocumentsOutput:
         raise NotImplementedError
+
+
+class DataSyncConnector(BaseConnector):
+    @abc.abstractmethod
+    def sync_data(self, data_source: Any):
+        raise NotImplementedError
