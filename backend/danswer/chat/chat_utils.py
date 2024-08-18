@@ -371,7 +371,7 @@ def drop_messages_history_overflow(
 ) -> list[BaseMessage]:
     """As message history grows, messages need to be dropped starting from the furthest in the past.
     The System message should be kept if at all possible and the latest user input which is inserted in the
-    prompt template must be included"""
+    prompt templates must be included"""
     if len(history_msgs) != len(history_token_counts):
         # This should never happen
         raise ValueError("Need exactly 1 token count per message for tracking overflow")
